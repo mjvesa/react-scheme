@@ -46,13 +46,20 @@
 (define (react-whitelist-0 elems)
  (if (null? elems)
      '()
-     (cons `(define ,(car elems) (react-element ',(car elems)))
+     (cons `(define ,(string->symbol (string-append "$" (symbol->string (car elems)))) (react-element ',(car elems)))
            (react-whitelist-0 (cdr elems)))))
 
 (define-macro (react-whitelist elems)
   (cons 'begin (react-whitelist-0 elems)))
 
-(react-whitelist (p div span h1 h2 h3 h4 ul ol li button input))
+(react-whitelist (a abbr address area article aside audio b base bdi bdo big blockquote body br
+                  button canvas caption cite code col colgroup data datalist dd del details dfn
+                  dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5
+                  h6 head header hr html i iframe img input ins kbd keygen label legend li link
+                  main map mark menu menuitem meta meter nav noscript object ol optgroup option
+                  output p param picture pre progress q rp rt ruby s samp script section select
+                  small source span strong style sub summary sup table tbody td textarea tfoot th
+                  thead time title tr track u ul var video wbr))
 
 
 (define null (js-eval "null"))
