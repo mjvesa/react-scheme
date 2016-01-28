@@ -1,7 +1,7 @@
-;; React experiments
+;; React Scheme bindings
 (define root
   (js-invoke (js-eval "document") "getElementById" "main"))
-  
+
 (define React
     (js-eval "React"))
 
