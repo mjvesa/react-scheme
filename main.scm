@@ -2,17 +2,26 @@
 
 (define item-counter 3)
 
-(define my-items (js-new "Immutable.Map"
-                   (js-obj
-                      "item1" "item1"
-                      "item2" "item2"
-                      "item3" "item3")))
+(define (map-set map key value)
+ (js-invoke map "set" key value))
+
+(define my-items (js-new "Map"))
+
+(map-set my-items "item1" "item1")
+(map-set my-items "item2" "item2")
+(map-set my-items "item3" "item3")
 
 (define (remove-item key)
-  (set! my-items (js-invoke my-items "delete" key)))
+  (js-invoke my-items "delete" key))
+
+(define (map-to-alist map)
+  (let ((result '()))
+    (js-invoke map "forEach" (js-closure (lambda (value key map)
+      (set! result (cons (cons  key value) result)))))
+    result))
 
 (define (get-items)
- (js-obj->alist (js-invoke my-items "toObject")))
+ (map-to-alist my-items))
 
 (define (new-item-key)
    (set! item-counter (+ item-counter 1))
@@ -34,7 +43,7 @@
                 '()
                 (cons (ListItem (props "item" (car items)) no-children)
                                 (makelist (cdr items)))))))
-    ($ul (props "style" (props "width" "auto")) (list->vector
+    ($ul no-props (list->vector
                         (makelist (get-prop "content"))))))
 (define input-value "")
 
@@ -58,10 +67,8 @@
                             ($button (props "key" "button"
                                             "onClick" (js-closure
                                                         (lambda ()
-                                                          (set! my-items
                                                             (js-invoke my-items "set"
-                                                              (new-item-key) input-value)
-                                                              my-items))))
+                                                              (new-item-key) input-value))))
                                 "add")))))))
 
 (define render-loop
